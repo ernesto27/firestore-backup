@@ -1,6 +1,6 @@
 # FIRESTORE BACKUP
 
-This is a simple tool to create backups of some collections of a firestore database.
+This is a simple tool to create backups from a firestore database.
 
 ## Installation
 
@@ -24,7 +24,7 @@ First parameter "firebase-credentials.json" is the config firebase file that you
 Project settings -> Service accounts -> Firebase admin SDK
 ```
 
-"collections.." are the name of the collections that you want to backup.
+"collections.." is the name of the collections that you want to backup.
 
 ## Example
 
