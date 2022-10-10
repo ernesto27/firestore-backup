@@ -44,8 +44,36 @@ func (f *Firestore) GetData(collection string) (map[string]map[string]interface{
 		if err != nil {
 			return nil, err
 		}
+
 		id := doc.Ref.ID
-		result[id] = doc.Data()
+		data := doc.Data()
+
+		iterSubCollections := doc.Ref.Collections(context.Background())
+		for {
+			collectionRef, err := iterSubCollections.Next()
+			if err == iterator.Done {
+				break
+			}
+			if err != nil {
+				return nil, err
+			}
+
+			iterSubCollectionsData := f.Client.Collection(collection).Doc(doc.Ref.ID).Collection(collectionRef.ID).Documents(context.Background())
+			subCollections := map[string]interface{}{}
+			for {
+				dataSnapshot, err := iterSubCollectionsData.Next()
+				if err == iterator.Done {
+					break
+				}
+				if err != nil {
+					return nil, err
+				}
+				subCollections[dataSnapshot.Ref.ID] = dataSnapshot.Data()
+				data[collectionRef.ID] = subCollections
+			}
+		}
+
+		result[id] = data
 	}
 	return result, nil
 }
